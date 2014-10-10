@@ -32,9 +32,13 @@ namespace FastCopyExtensions
         {
             if (src == null) {
                 throw new ArgumentNullException("src");
+            } else if (src.Length < 0) {
+                throw new ArgumentException("src.Length < 0", "src");
             }
             if (dst == null) {
                 throw new ArgumentNullException("dst");
+            } else if (dst.Length < 0) {
+                throw new ArgumentException("dst.Length < 0", "dst");
             }
             if (srcOff < 0) {
                 throw new ArgumentOutOfRangeException("srcOff", "srcOff < 0");
@@ -64,26 +68,26 @@ namespace FastCopyExtensions
             }
         }
 
-        internal static int SizeOf<T>() where T : struct
-        {
-            var typeOfT = typeof(T);
-            if (typeOfT == typeof(byte)) {
-                return 1;
-            } else if (typeOfT == typeof(char)) {
-                return sizeof(char);
-            } else if (typeOfT == typeof(short) || typeOfT == typeof(ushort)) {
-                return sizeof(short);
-            } else if (typeOfT == typeof(int) || typeOfT == typeof(uint)) {
-                return sizeof(int);
-            } else if (typeOfT == typeof(long) || typeOfT == typeof(ulong)) {
-                return sizeof(long);
-            } else if (typeOfT == typeof(float)) {
-                return sizeof(float);
-            } else if (typeOfT == typeof(double)) {
-                return sizeof(double);
-            }
-            // Other type
-            throw new NotSupportedException("T obj : Not a supported type.");
-        }
+//        internal static int SizeOf<T>() where T : struct
+//        {
+//            var typeOfT = typeof(T);
+//            if (typeOfT == typeof(byte)) {
+//                return 1;
+//            } else if (typeOfT == typeof(char)) {
+//                return sizeof(char);
+//            } else if (typeOfT == typeof(short) || typeOfT == typeof(ushort)) {
+//                return sizeof(short);
+//            } else if (typeOfT == typeof(int) || typeOfT == typeof(uint)) {
+//                return sizeof(int);
+//            } else if (typeOfT == typeof(long) || typeOfT == typeof(ulong)) {
+//                return sizeof(long);
+//            } else if (typeOfT == typeof(float)) {
+//                return sizeof(float);
+//            } else if (typeOfT == typeof(double)) {
+//                return sizeof(double);
+//            }
+//            // Other type
+//            throw new NotSupportedException("T : " + typeof(T).Name + " - Not a supported type.");
+//        }
     }
 }

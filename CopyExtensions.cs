@@ -158,9 +158,9 @@ namespace FastCopyExtensions
                 unsafe {
                     fixed (int* srcPtr = src) {
                         fixed (int* dstPtr = dst) {
-                            var srcBP = (byte*) (srcPtr + srcOff);
-                            var dstBP = (byte*) (dstPtr + dstOff);
-                            CopyMemory(srcBP, dstBP, length);
+                            var srcBytePtr = (byte*) (srcPtr + srcOff);
+                            var dstBytePtr = (byte*)(dstPtr + dstOff);
+                            CopyMemory(srcBytePtr, dstBytePtr, length * sizeof(int));
                         }
                     }
                 }
@@ -168,7 +168,7 @@ namespace FastCopyExtensions
 #endif
                 const int bcLimit = BufferBlockCopyThreshold / sizeof(int);
                 if (length >= bcLimit) {
-                    Buffer.BlockCopy(src, srcOff, dst, dstOff, length);
+                    Buffer.BlockCopy(src, srcOff, dst, dstOff, length * sizeof(int));
                 } else {
                     Array.Copy(src, srcOff, dst, dstOff, length);
                 }
@@ -233,9 +233,9 @@ namespace FastCopyExtensions
                 unsafe {
                     fixed (uint* srcPtr = src) {
                         fixed (uint* dstPtr = dst) {
-                            var srcBP = (byte*) (srcPtr + srcOff);
-                            var dstBP = (byte*) (dstPtr + dstOff);
-                            CopyMemory(srcBP, dstBP, length);
+                            var srcBytePtr = (byte*)(srcPtr + srcOff);
+                            var dstBytePtr = (byte*)(dstPtr + dstOff);
+                            CopyMemory(srcBytePtr, dstBytePtr, length);
                         }
                     }
                 }
@@ -297,9 +297,9 @@ namespace FastCopyExtensions
                 unsafe {
                     fixed (long* srcPtr = src) {
                         fixed (long* dstPtr = dst) {
-                            var srcBP = (byte*) (srcPtr + srcOff);
-                            var dstBP = (byte*) (dstPtr + dstOff);
-                            CopyMemory(srcBP, dstBP, length);
+                            var srcBytePtr = (byte*)(srcPtr + srcOff);
+                            var dstBytePtr = (byte*)(dstPtr + dstOff);
+                            CopyMemory(srcBytePtr, dstBytePtr, length * sizeof(long));
                         }
                     }
                 }
@@ -307,7 +307,7 @@ namespace FastCopyExtensions
 #endif
                 const int bcLimit = BufferBlockCopyThreshold / sizeof(long);
                 if (length >= bcLimit) {
-                    Buffer.BlockCopy(src, srcOff, dst, dstOff, length);
+                    Buffer.BlockCopy(src, srcOff, dst, dstOff, length * sizeof(long));
                 } else {
                     Array.Copy(src, srcOff, dst, dstOff, length);
                 }
@@ -361,9 +361,9 @@ namespace FastCopyExtensions
                 unsafe {
                     fixed (ulong* srcPtr = src) {
                         fixed (ulong* dstPtr = dst) {
-                            var srcBP = (byte*) (srcPtr + srcOff);
-                            var dstBP = (byte*) (dstPtr + dstOff);
-                            CopyMemory(srcBP, dstBP, length);
+                            var srcBytePtr = (byte*)(srcPtr + srcOff);
+                            var dstBytePtr = (byte*)(dstPtr + dstOff);
+                            CopyMemory(srcBytePtr, dstBytePtr, length * sizeof(ulong));
                         }
                     }
                 }
@@ -371,7 +371,7 @@ namespace FastCopyExtensions
 #endif
                 const int bcLimit = BufferBlockCopyThreshold / sizeof(ulong);
                 if (length >= bcLimit) {
-                    Buffer.BlockCopy(src, srcOff, dst, dstOff, length);
+                    Buffer.BlockCopy(src, srcOff, dst, dstOff, length * sizeof(ulong));
                 } else {
                     Array.Copy(src, srcOff, dst, dstOff, length);
                 }
@@ -383,58 +383,62 @@ namespace FastCopyExtensions
 
 #if INCLUDE_UNSAFE
         /// <summary>
-        ///     Copy data from <paramref name="src" /> into <paramref name="dst" />.
+        ///     Copy data from <paramref name="srcPtr" /> into <paramref name="dstPtr" />.
         /// </summary>
-        /// <param name="src">Pointer to source of data.</param>
-        /// <param name="dst">Pointer to destination for data.</param>
-        /// <param name="length">Length of data to copy in bytes.</param>
-        internal static unsafe void CopyMemory(byte* src, byte* dst, int length)
+        /// <remarks>
+        ///     If <paramref name="srcPtr" /> or <paramref name="dstPtr" /> are not originally for byte-data, 
+        ///     length will need to be adjusted accordingly, e.g. uint pointer to byte pointer = 4x length.
+        /// </remarks>
+        /// <param name="srcPtr">Pointer to source of data.</param>
+        /// <param name="dstPtr">Pointer to destination for data.</param>
+        /// <param name="length">Length of data to copy, in bytes.</param>
+        internal static unsafe void CopyMemory(byte* srcPtr, byte* dstPtr, int length)
         {
             if (Shared.PlatformWordSize == sizeof(UInt32)) {
                 while (length >= sizeof(UInt64)) {
-                    *(UInt32*) dst = *(UInt32*) src;
-                    dst += sizeof(UInt32);
-                    src += sizeof(UInt32);
-                    *(UInt32*) dst = *(UInt32*) src;
-                    dst += sizeof(UInt32);
-                    src += sizeof(UInt32);
+                    *(UInt32*) dstPtr = *(UInt32*) srcPtr;
+                    dstPtr += sizeof(UInt32);
+                    srcPtr += sizeof(UInt32);
+                    *(UInt32*) dstPtr = *(UInt32*) srcPtr;
+                    dstPtr += sizeof(UInt32);
+                    srcPtr += sizeof(UInt32);
                     length -= sizeof(UInt64);
                 }
             } else if (Shared.PlatformWordSize == sizeof(UInt64)) {
                 while (length >= sizeof(UInt64) * 2) {
-                    *(UInt64*) dst = *(UInt64*) src;
-                    dst += sizeof(UInt64);
-                    src += sizeof(UInt64);
-                    *(UInt64*) dst = *(UInt64*) src;
-                    dst += sizeof(UInt64);
-                    src += sizeof(UInt64);
+                    *(UInt64*) dstPtr = *(UInt64*) srcPtr;
+                    dstPtr += sizeof(UInt64);
+                    srcPtr += sizeof(UInt64);
+                    *(UInt64*) dstPtr = *(UInt64*) srcPtr;
+                    dstPtr += sizeof(UInt64);
+                    srcPtr += sizeof(UInt64);
                     length -= sizeof(UInt64) * 2;
                 }
 
                 if (length >= sizeof(UInt64)) {
-                    *(UInt64*) dst = *(UInt64*) src;
-                    dst += sizeof(UInt64);
-                    src += sizeof(UInt64);
+                    *(UInt64*) dstPtr = *(UInt64*) srcPtr;
+                    dstPtr += sizeof(UInt64);
+                    srcPtr += sizeof(UInt64);
                     length -= sizeof(UInt64);
                 }
             }
 
             if (length >= sizeof(UInt32)) {
-                *(UInt32*) dst = *(UInt32*) src;
-                dst += sizeof(UInt32);
-                src += sizeof(UInt32);
+                *(UInt32*) dstPtr = *(UInt32*) srcPtr;
+                dstPtr += sizeof(UInt32);
+                srcPtr += sizeof(UInt32);
                 length -= sizeof(UInt32);
             }
 
             if (length >= sizeof(UInt16)) {
-                *(UInt16*) dst = *(UInt16*) src;
-                dst += sizeof(UInt16);
-                src += sizeof(UInt16);
+                *(UInt16*) dstPtr = *(UInt16*) srcPtr;
+                dstPtr += sizeof(UInt16);
+                srcPtr += sizeof(UInt16);
                 length -= sizeof(UInt16);
             }
 
             if (length > 0) {
-                *dst = *src;
+                *dstPtr = *srcPtr;
             }
         }
 #endif
