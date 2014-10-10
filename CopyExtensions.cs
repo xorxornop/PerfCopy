@@ -19,7 +19,7 @@
 
 using System;
 
-namespace FastCopyExtensions
+namespace PerfCopy
 {
     /// <summary>
     ///     Extension methods for copying data.
