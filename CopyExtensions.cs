@@ -18,6 +18,7 @@
 #endregion
 
 using System;
+using System.Runtime.CompilerServices;
 
 namespace PerfCopy
 {
@@ -42,7 +43,7 @@ namespace PerfCopy
                 return null;
             }
             var dst = new byte[data.Length];
-            data.DeepCopy(dst, data.Length);
+            data.DeepCopy(0, dst, 0, data.Length);
             return dst;
         }
 
@@ -51,42 +52,84 @@ namespace PerfCopy
         /// </summary>
         /// <param name="src">Array to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this byte[] src, byte[] dst)
         {
             Shared.ThrowOnInvalidArgument(src, dst, src.Length);
-            DeepCopyInternal(src, 0, dst, 0, src.Length);
+            DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
         /// <summary>
-        ///     Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.
+        ///     Copy <paramref name="length" /> values from <paramref name="src" /> array into <paramref name="dst" /> array.
         /// </summary>
         /// <param name="src">Array to copy from.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
-        /// <param name="length">Amount of values to copy.</param>
-        /// <param name="srcOff">The offset in <paramref name="src" /> at which to copy from.</param>
-        /// <param name="dstOff">The offset in <paramref name="dst" /> at which to copy into.</param>
-        public static void DeepCopy(this byte[] src, byte[] dst, int length, int srcOff = 0, int dstOff = 0)
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        /// <param name="length">Quantity of values to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DeepCopy(this byte[] src, int srcOff, byte[] dst, int dstOff, int length)
         {
             Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
-            DeepCopyInternal(src, srcOff, dst, dstOff, length);
+            DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
         /// <summary>
-        ///     Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.
+        ///     Copy bytes from <paramref name="src" /> array into <paramref name="dst" /> array.
         /// </summary>
         /// <param name="src">Array to copy from.</param>
-        /// <param name="srcOff">The offset in <paramref name="src" /> at which to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
-        /// <param name="dstOff">The offset in <paramref name="dst" /> at which to copy into.</param>
-        /// <param name="length">Amount of values to copy.</param>
-        internal static void DeepCopyInternal(byte[] src, int srcOff, byte[] dst, int dstOff, int length)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CopyBytes(this byte[] src, byte[] dst)
+        {
+            src.DeepCopy(dst);
+        }
+
+        /// <summary>
+        ///     Copy <paramref name="length" /> bytes from <paramref name="src" />
+        ///     array into <paramref name="dst" /> array.
+        /// </summary>
+        /// <param name="src">Array to copy from.</param>
+        /// <param name="dst">Array to copy into.</param>
+        /// <param name="length">Amount of bytes to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CopyBytes(this byte[] src, byte[] dst, int length)
+        {
+            src.DeepCopy(0, dst, 0, length);
+        }
+
+        /// <summary>
+        ///     Copy <paramref name="length" /> bytes from <paramref name="src" />
+        ///     array into <paramref name="dst" /> array.
+        /// </summary>
+        /// <param name="src">Array to copy from.</param>
+        /// <param name="dst">Array to copy into.</param>
+        /// <param name="length">Amount of bytes to copy.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void CopyBytes(this byte[] src, int srcOff, byte[] dst, int dstOff, int length)
+        {
+            src.DeepCopy(srcOff, dst, dstOff, length);
+        }
+
+        /// <summary>
+        ///     Copy <paramref name="length" /> values from <paramref name="src" /> array into <paramref name="dst" /> array.
+        ///     Argument/parameter validation is not performed - caution!
+        /// </summary>
+        /// <param name="src">Array to copy from.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
+        /// <param name="dst">Array to copy into.</param>
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        /// <param name="length">Quantity of values to copy.</param>
+        public static void DeepCopy_NoChecks(this byte[] src, int srcOff, byte[] dst, int dstOff, int length)
         {
 #if INCLUDE_UNSAFE
             if (length >= UnmanagedThreshold) {
                 unsafe {
-                    fixed (byte* srcPtr = src) {
-                        fixed (byte* dstPtr = dst) {
-                            CopyMemory(srcPtr + srcOff, dstPtr + dstOff, length);
+                    fixed (byte* srcPtr = &src[srcOff]) {
+                        fixed (byte* dstPtr = &dst[dstOff]) {
+                            CopyMemory(srcPtr, dstPtr, length);
                         }
                     }
                 }
@@ -113,7 +156,7 @@ namespace PerfCopy
                 return null;
             }
             var dst = new int[data.Length];
-            data.DeepCopy(dst, data.Length);
+            data.DeepCopy(0, dst, 0, data.Length);
             return dst;
         }
 
@@ -122,45 +165,46 @@ namespace PerfCopy
         /// </summary>
         /// <param name="src">Array to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this int[] src, int[] dst)
         {
             Shared.ThrowOnInvalidArgument(src, dst, src.Length);
-            DeepCopyInternal(src, 0, dst, 0, src.Length);
+            DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
         /// <summary>
         ///     Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.
         /// </summary>
         /// <param name="src">Array to copy from.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
-        /// <param name="length">Amount of values to copy.</param>
-        /// <param name="srcOff">The offset in <paramref name="src" /> at which to copy from.</param>
-        /// <param name="dstOff">The offset in <paramref name="dst" /> at which to copy into.</param>
-        public static void DeepCopy(this int[] src, int[] dst, int length, int srcOff = 0, int dstOff = 0)
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        /// <param name="length">Quantity of values to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DeepCopy(this int[] src, int srcOff, int[] dst, int dstOff, int length)
         {
             Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
-            DeepCopyInternal(src, srcOff, dst, dstOff, length);
+            DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
         /// <summary>
         ///     Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.
+        ///     Argument/parameter validation is not performed - caution!
         /// </summary>
         /// <param name="src">Array to copy from.</param>
-        /// <param name="srcOff">The offset in <paramref name="src" /> at which to copy from.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
-        /// <param name="dstOff">The offset in <paramref name="dst" /> at which to copy into.</param>
-        /// <param name="length">Amount of values to copy.</param>
-        internal static void DeepCopyInternal(int[] src, int srcOff, int[] dst, int dstOff, int length)
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        /// <param name="length">Quantity of values to copy.</param>
+        public static void DeepCopy_NoChecks(this int[] src, int srcOff, int[] dst, int dstOff, int length)
         {
 #if INCLUDE_UNSAFE
             const int umLimit = UnmanagedThreshold / sizeof(int);
             if (length >= umLimit) {
                 unsafe {
-                    fixed (int* srcPtr = src) {
-                        fixed (int* dstPtr = dst) {
-                            var srcBytePtr = (byte*) (srcPtr + srcOff);
-                            var dstBytePtr = (byte*)(dstPtr + dstOff);
-                            CopyMemory(srcBytePtr, dstBytePtr, length * sizeof(int));
+                    fixed (int* srcPtr = &src[srcOff]) {
+                        fixed (int* dstPtr = &dst[dstOff]) {
+                            CopyMemory((byte*)srcPtr, (byte*)dstPtr, length * sizeof(int));
                         }
                     }
                 }
@@ -188,7 +232,7 @@ namespace PerfCopy
                 return null;
             }
             var dst = new uint[data.Length];
-            data.DeepCopy(dst, data.Length);
+            data.DeepCopy(0, dst, 0, data.Length);
             return dst;
         }
 
@@ -197,45 +241,46 @@ namespace PerfCopy
         /// </summary>
         /// <param name="src">Array to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this uint[] src, uint[] dst)
         {
             Shared.ThrowOnInvalidArgument(src, dst, src.Length);
-            DeepCopyInternal(src, 0, dst, 0, src.Length);
+            DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
         /// <summary>
         ///     Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.
         /// </summary>
         /// <param name="src">Array to copy from.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
-        /// <param name="length">Amount of values to copy.</param>
-        /// <param name="srcOff">The offset in <paramref name="src" /> at which to copy from.</param>
-        /// <param name="dstOff">The offset in <paramref name="dst" /> at which to copy into.</param>
-        public static void DeepCopy(this uint[] src, uint[] dst, int length, int srcOff = 0, int dstOff = 0)
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        /// <param name="length">Quantity of values to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DeepCopy(this uint[] src, int srcOff, uint[] dst, int dstOff, int length)
         {
             Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
-            DeepCopyInternal(src, srcOff, dst, dstOff, length);
+            DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
         /// <summary>
         ///     Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.
+        ///     Argument/parameter validation is not performed - caution!
         /// </summary>
         /// <param name="src">Array to copy from.</param>
-        /// <param name="srcOff">The offset in <paramref name="src" /> at which to copy from.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
-        /// <param name="dstOff">The offset in <paramref name="dst" /> at which to copy into.</param>
-        /// <param name="length">Amount of values to copy.</param>
-        internal static void DeepCopyInternal(uint[] src, int srcOff, uint[] dst, int dstOff, int length)
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        /// <param name="length">Quantity of values to copy.</param>
+        public static void DeepCopy_NoChecks(this uint[] src, int srcOff, uint[] dst, int dstOff, int length)
         {
 #if INCLUDE_UNSAFE
             const int umLimit = UnmanagedThreshold / sizeof(uint);
             if (length >= umLimit) {
                 unsafe {
-                    fixed (uint* srcPtr = src) {
-                        fixed (uint* dstPtr = dst) {
-                            var srcBytePtr = (byte*)(srcPtr + srcOff);
-                            var dstBytePtr = (byte*)(dstPtr + dstOff);
-                            CopyMemory(srcBytePtr, dstBytePtr, length);
+                    fixed (uint* srcPtr = &src[srcOff]) {
+                        fixed (uint* dstPtr = &dst[dstOff]) {
+                            CopyMemory((byte*)srcPtr, (byte*)dstPtr, length * sizeof(uint));
                         }
                     }
                 }
@@ -243,7 +288,7 @@ namespace PerfCopy
 #endif
                 const int bcLimit = BufferBlockCopyThreshold / sizeof(uint);
                 if (length >= bcLimit) {
-                    Buffer.BlockCopy(src, srcOff, dst, dstOff, length);
+                    Buffer.BlockCopy(src, srcOff, dst, dstOff, length * sizeof(uint));
                 } else {
                     Array.Copy(src, srcOff, dst, dstOff, length);
                 }
@@ -263,7 +308,7 @@ namespace PerfCopy
                 return null;
             }
             var dst = new long[data.Length];
-            data.DeepCopy(dst, data.Length);
+            data.DeepCopy(0, dst, 0, data.Length);
             return dst;
         }
 
@@ -271,35 +316,35 @@ namespace PerfCopy
         ///     Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.
         /// </summary>
         /// <param name="src">Array to copy from.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
-        /// <param name="length">Amount of values to copy.</param>
-        /// <param name="srcOff">The offset in <paramref name="src" /> at which to copy from.</param>
-        /// <param name="dstOff">The offset in <paramref name="dst" /> at which to copy into.</param>
-        public static void DeepCopy(this long[] src, long[] dst, int length, int srcOff = 0, int dstOff = 0)
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        /// <param name="length">Quantity of values to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DeepCopy(this long[] src, int srcOff, long[] dst, int dstOff, int length)
         {
             Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
-            DeepCopyInternal(src, srcOff, dst, dstOff, length);
+            DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
         /// <summary>
         ///     Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.
+        ///     Argument/parameter validation is not performed - caution!
         /// </summary>
         /// <param name="src">Array to copy from.</param>
-        /// <param name="srcOff">The offset in <paramref name="src" /> at which to copy from.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
-        /// <param name="dstOff">The offset in <paramref name="dst" /> at which to copy into.</param>
-        /// <param name="length">Amount of values to copy.</param>
-        internal static void DeepCopyInternal(long[] src, int srcOff, long[] dst, int dstOff, int length)
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        /// <param name="length">Quantity of values to copy.</param>
+        public static void DeepCopy_NoChecks(this long[] src, int srcOff, long[] dst, int dstOff, int length)
         {
 #if INCLUDE_UNSAFE
             const int umLimit = UnmanagedThreshold / sizeof(long);
             if (length >= umLimit) {
                 unsafe {
-                    fixed (long* srcPtr = src) {
-                        fixed (long* dstPtr = dst) {
-                            var srcBytePtr = (byte*)(srcPtr + srcOff);
-                            var dstBytePtr = (byte*)(dstPtr + dstOff);
-                            CopyMemory(srcBytePtr, dstBytePtr, length * sizeof(long));
+                    fixed (long* srcPtr = &src[srcOff]) {
+                        fixed (long* dstPtr = &dst[dstOff]) {
+                            CopyMemory((byte*)srcPtr, (byte*)dstPtr, length * sizeof(long));
                         }
                     }
                 }
@@ -327,7 +372,7 @@ namespace PerfCopy
                 return null;
             }
             var dst = new ulong[data.Length];
-            data.DeepCopy(dst, data.Length);
+            data.DeepCopy(0, dst, 0, data.Length);
             return dst;
         }
 
@@ -335,35 +380,35 @@ namespace PerfCopy
         ///     Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.
         /// </summary>
         /// <param name="src">Array to copy from.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
-        /// <param name="length">Amount of values to copy.</param>
-        /// <param name="srcOff">The offset in <paramref name="src" /> at which to copy from.</param>
-        /// <param name="dstOff">The offset in <paramref name="dst" /> at which to copy into.</param>
-        public static void DeepCopy(this ulong[] src, ulong[] dst, int length, int srcOff = 0, int dstOff = 0)
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        /// <param name="length">Quantity of values to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void DeepCopy(this ulong[] src, int srcOff, ulong[] dst, int dstOff, int length)
         {
             Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
-            DeepCopyInternal(src, srcOff, dst, dstOff, length);
+            DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
         /// <summary>
         ///     Copy values from <paramref name="src" /> array into <paramref name="dst" /> array.
+        ///     Argument/parameter validation is not performed - caution!
         /// </summary>
         /// <param name="src">Array to copy from.</param>
-        /// <param name="srcOff">The offset in <paramref name="src" /> at which to copy from.</param>
+        /// <param name="srcOff">The offset in <paramref name="src" /> to copy from.</param>
         /// <param name="dst">Array to copy into.</param>
-        /// <param name="dstOff">The offset in <paramref name="dst" /> at which to copy into.</param>
-        /// <param name="length">Amount of values to copy.</param>
-        internal static void DeepCopyInternal(ulong[] src, int srcOff, ulong[] dst, int dstOff, int length)
+        /// <param name="dstOff">The offset in <paramref name="dst" /> to copy into.</param>
+        /// <param name="length">Quantity of values to copy.</param>
+        public static void DeepCopy_NoChecks(this ulong[] src, int srcOff, ulong[] dst, int dstOff, int length)
         {
 #if INCLUDE_UNSAFE
             const int umLimit = UnmanagedThreshold / sizeof(ulong);
             if (length >= umLimit) {
                 unsafe {
-                    fixed (ulong* srcPtr = src) {
-                        fixed (ulong* dstPtr = dst) {
-                            var srcBytePtr = (byte*)(srcPtr + srcOff);
-                            var dstBytePtr = (byte*)(dstPtr + dstOff);
-                            CopyMemory(srcBytePtr, dstBytePtr, length * sizeof(ulong));
+                    fixed (ulong* srcPtr = &src[srcOff]) {
+                        fixed (ulong* dstPtr = &dst[dstOff]) {
+                            CopyMemory((byte*)srcPtr, (byte*)dstPtr, length * sizeof(ulong));
                         }
                     }
                 }
@@ -380,26 +425,25 @@ namespace PerfCopy
 #endif
         }
 
-
 #if INCLUDE_UNSAFE
         /// <summary>
         ///     Copy data from <paramref name="srcPtr" /> into <paramref name="dstPtr" />.
         /// </summary>
         /// <remarks>
-        ///     If <paramref name="srcPtr" /> or <paramref name="dstPtr" /> are not originally for byte-data, 
-        ///     length will need to be adjusted accordingly, e.g. uint pointer to byte pointer = 4x length.
+        ///     If <paramref name="srcPtr" /> or <paramref name="dstPtr" /> are not originally for byte-oriented data,
+        ///     length will need to be adjusted accordingly, e.g. UInt32 pointer vs. byte pointer = 4x length.
         /// </remarks>
         /// <param name="srcPtr">Pointer to source of data.</param>
         /// <param name="dstPtr">Pointer to destination for data.</param>
-        /// <param name="length">Length of data to copy, in bytes.</param>
+        /// <param name="length">Length/quantity of data to copy, in bytes.</param>
         internal static unsafe void CopyMemory(byte* srcPtr, byte* dstPtr, int length)
         {
             if (Shared.PlatformWordSize == sizeof(UInt32)) {
                 while (length >= sizeof(UInt64)) {
-                    *(UInt32*) dstPtr = *(UInt32*) srcPtr;
+                    *(UInt32*)dstPtr = *(UInt32*)srcPtr;
                     dstPtr += sizeof(UInt32);
                     srcPtr += sizeof(UInt32);
-                    *(UInt32*) dstPtr = *(UInt32*) srcPtr;
+                    *(UInt32*)dstPtr = *(UInt32*)srcPtr;
                     dstPtr += sizeof(UInt32);
                     srcPtr += sizeof(UInt32);
                     length -= sizeof(UInt64);
