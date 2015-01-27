@@ -744,16 +744,6 @@ namespace PerfCopy
 
         #endregion
 
-        #region Utility method(s)
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        internal static int DivRem(int dividend, int divisor, out int remainder)
-        {
-            int quotient = dividend / divisor;
-            remainder = dividend - (divisor * quotient);
-            return quotient;
-        }
-
 #if INCLUDE_UNSAFE
 
         /// <summary>
@@ -761,7 +751,7 @@ namespace PerfCopy
         /// </summary>
         /// <remarks>
         ///     If <paramref name="srcPtr" /> or <paramref name="dstPtr" /> are not originally for byte-oriented data,
-        ///     length will need to be adjusted accordingly, e.g. UInt3232 pointer vs. byte pointer = 4x length.
+        ///     length will need to be adjusted accordingly, e.g. UInt32 pointer vs. byte pointer = 4x length.
         ///     Method auto-optimises for word size (32/64-bit) on the machine ISA.
         /// </remarks>
         /// <param name="srcPtr">Pointer to source of data.</param>
@@ -770,69 +760,54 @@ namespace PerfCopy
         public static unsafe void CopyMemory(byte* srcPtr, byte* dstPtr, int length)
         {
             const int u32Size = sizeof(UInt32);
-            if (Shared.PlatformWordSize == sizeof(UInt32)) {
-                int remainingBytes;
-                int words32 = DivRem(length, u32Size, out remainingBytes);
-                var src32Ptr = (UInt32*)srcPtr;
-                var dst32Ptr = (UInt32*)dstPtr;
-                for (int i = 0; i < words32; i += 2) {
-                    *(dst32Ptr + i) = *(src32Ptr + i);
-                    *(dst32Ptr + i + 1) = *(src32Ptr + i + 1);
-                }
-                if (remainingBytes >= u32Size) {
-                    *(dst32Ptr + words32) = *(src32Ptr + words32);
-                    words32++;
-                    remainingBytes -= u32Size;
-                }
-                srcPtr += words32 * u32Size;
-                dstPtr += words32 * u32Size;
-                length = remainingBytes;
-            } else if (Shared.PlatformWordSize == sizeof(UInt64)) {
-                const int u64Size = sizeof(UInt64);
-                int remainingBytes;
-                int words64 = DivRem(length, u64Size, out remainingBytes);
-                var src64Ptr = (UInt64*)srcPtr;
-                var dst64Ptr = (UInt64*)dstPtr;
-                for (int i = 0; i < words64; i += 2) {
-                    *(dst64Ptr + i) = *(src64Ptr + i);
-                    *(dst64Ptr + i + 1) = *(src64Ptr + i + 1);
-                }
-                if (remainingBytes >= u64Size) {
-                    *(dst64Ptr + words64) = *(src64Ptr + words64);
-                    words64++;
-                    remainingBytes -= u64Size;
-                }
-                if (remainingBytes >= u32Size) {
-                    *(UInt32*)(dst64Ptr + words64) = *(UInt32*)(src64Ptr + words64);
+            const int u64Size = sizeof(UInt64);
+
+            byte* srcEndPtr = srcPtr + length;
+
+            if (Shared.PlatformWordSize == u32Size) {
+                // 32-bit
+                while (srcPtr + u64Size <= srcEndPtr) {
+                    *(UInt32*) dstPtr = *(UInt32*) srcPtr;
                     dstPtr += u32Size;
                     srcPtr += u32Size;
-                    remainingBytes -= u32Size;
+                    *(UInt32*) dstPtr = *(UInt32*) srcPtr;
+                    dstPtr += u32Size;
+                    srcPtr += u32Size;
                 }
-                srcPtr += words64 * u64Size;
-                dstPtr += words64 * u64Size;
-                length = remainingBytes;
+            } else if (Shared.PlatformWordSize == u64Size) {
+                // 64-bit            
+                const int u128Size = sizeof(UInt64) * 2;
+                while (srcPtr + u128Size <= srcEndPtr) {
+                    *(UInt64*) dstPtr = *(UInt64*) srcPtr;
+                    dstPtr += u64Size;
+                    srcPtr += u64Size;
+                    *(UInt64*) dstPtr = *(UInt64*) srcPtr;
+                    dstPtr += u64Size;
+                    srcPtr += u64Size;
+                }
+                if (srcPtr + u64Size <= srcEndPtr) {
+                    *(UInt64*) dstPtr ^= *(UInt64*) srcPtr;
+                    dstPtr += u64Size;
+                    srcPtr += u64Size;
+                }
             }
 
-            if (length >= u32Size) {
-                *(UInt32*)dstPtr = *(UInt32*)srcPtr;
+            if (srcPtr + u32Size <= srcEndPtr) {
+                *(UInt32*) dstPtr = *(UInt32*) srcPtr;
                 dstPtr += u32Size;
                 srcPtr += u32Size;
-                length -= u32Size;
             }
 
-            if (length >= sizeof(UInt16)) {
-                *(UInt16*)dstPtr = *(UInt16*)srcPtr;
+            if (srcPtr + sizeof(UInt16) <= srcEndPtr) {
+                *(UInt16*) dstPtr = *(UInt16*) srcPtr;
                 dstPtr += sizeof(UInt16);
                 srcPtr += sizeof(UInt16);
-                length -= sizeof(UInt16);
             }
 
-            if (length > 0) {
+            if (srcPtr + 1 <= srcEndPtr) {
                 *dstPtr = *srcPtr;
             }
         }
 #endif
-
-        #endregion
     }
 }

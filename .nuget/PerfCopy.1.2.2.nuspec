@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+    <metadata>
+        <id>PerfCopy</id>
+        <version>1.2.2</version>
+        <title>PerfCopy</title>
+        <authors>zenith</authors>
+        <owners>zenith</owners>
+        <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0.txt</licenseUrl>
+        <projectUrl>http://github.com/zenith-nz/PerfCopy</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Extension methods providing high performance deep copy capability for of arrays of common value types - currently: byte, char, short, int, long, and their unsigned brethren where applicable.
+Considerably faster than Array.Copy - and it's also faster than Buffer.BlockCopy in most situations!
+
+High-performance enabled through use of optimised 'unsafe' blocks.
+
+This package could be a good addition to other packages if you're building in copying of some kind that would benefit from being fast.</description>
+        <summary>Deep copy arrays of value types really quickly (considerably faster than BCL-provided methods, at no cost to usability).</summary>
+        <releaseNotes>Simplified the high-performance copy implementation, may run faster on many CPUs.</releaseNotes>
+        <copyright>Matthew Ducker 2015</copyright>
+        <tags>deep copy performance</tags>
+    </metadata>
+    <files>
+        <file src="lib\portable-net4+netcore45+wpa81+MonoAndroid1+MonoTouch1\PerfCopy.dll" target="lib\portable-net4+netcore45+wpa81+MonoAndroid1+MonoTouch1\PerfCopy.dll" />
+        <file src="lib\portable-net4+netcore45+wpa81+MonoAndroid1+MonoTouch1\PerfCopy.pdb" target="lib\portable-net4+netcore45+wpa81+MonoAndroid1+MonoTouch1\PerfCopy.pdb" />
+        <file src="lib\portable-net4+netcore45+wpa81+MonoAndroid1+MonoTouch1\PerfCopy.xml" target="lib\portable-net4+netcore45+wpa81+MonoAndroid1+MonoTouch1\PerfCopy.xml" />
+    </files>
+</package>
