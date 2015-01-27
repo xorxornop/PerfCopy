@@ -1,6 +1,6 @@
 ﻿#region License
 
-//  	Copyright 2013-2014 Matthew Ducker
+//  	Copyright 2013-2015 Matthew Ducker
 //  	
 //  	Licensed under the Apache License, Version 2.0 (the "License");
 //  	you may not use this file except in compliance with the License.
@@ -131,7 +131,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this byte[] src, byte[] dst)
         {
-            ThrowOnInvalidArgument(src, dst, src.Length);
+            Shared.ThrowOnInvalidArgument(src, dst, src.Length);
             DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
@@ -146,7 +146,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this byte[] src, int srcOff, byte[] dst, int dstOff, int length)
         {
-            ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
+            Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
             DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
@@ -209,7 +209,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this char[] src, char[] dst)
         {
-            ThrowOnInvalidArgument(src, dst, src.Length);
+            Shared.ThrowOnInvalidArgument(src, dst, src.Length);
             DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
@@ -224,7 +224,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this char[] src, int srcOff, char[] dst, int dstOff, int length)
         {
-            ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
+            Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
             DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
@@ -289,7 +289,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this Int16[] src, Int16[] dst)
         {
-            ThrowOnInvalidArgument(src, dst, src.Length);
+            Shared.ThrowOnInvalidArgument(src, dst, src.Length);
             DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
@@ -304,7 +304,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this Int16[] src, int srcOff, Int16[] dst, int dstOff, int length)
         {
-            ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
+            Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
             DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
@@ -369,7 +369,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this UInt16[] src, UInt16[] dst)
         {
-            ThrowOnInvalidArgument(src, dst, src.Length);
+            Shared.ThrowOnInvalidArgument(src, dst, src.Length);
             DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
@@ -384,7 +384,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this UInt16[] src, int srcOff, UInt16[] dst, int dstOff, int length)
         {
-            ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
+            Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
             DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
@@ -449,7 +449,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this Int32[] src, Int32[] dst)
         {
-            ThrowOnInvalidArgument(src, dst, src.Length);
+            Shared.ThrowOnInvalidArgument(src, dst, src.Length);
             DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
@@ -464,7 +464,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this Int32[] src, int srcOff, Int32[] dst, int dstOff, int length)
         {
-            ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
+            Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
             DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
@@ -529,7 +529,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this UInt32[] src, UInt32[] dst)
         {
-            ThrowOnInvalidArgument(src, dst, src.Length);
+            Shared.ThrowOnInvalidArgument(src, dst, src.Length);
             DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
@@ -544,7 +544,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this UInt32[] src, int srcOff, UInt32[] dst, int dstOff, int length)
         {
-            ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
+            Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
             DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
@@ -609,7 +609,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this Int64[] src, Int64[] dst)
         {
-            ThrowOnInvalidArgument(src, dst, src.Length);
+            Shared.ThrowOnInvalidArgument(src, dst, src.Length);
             DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
@@ -624,7 +624,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this Int64[] src, int srcOff, Int64[] dst, int dstOff, int length)
         {
-            ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
+            Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
             DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
@@ -677,7 +677,7 @@ namespace PerfCopy
                 return null;
             }
             var dst = new UInt64[data.Length];
-            data.DeepCopy(0, dst, 0, data.Length);
+            data.DeepCopy_NoChecks(0, dst, 0, data.Length);
             return dst;
         }
 
@@ -689,7 +689,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this UInt64[] src, UInt64[] dst)
         {
-            ThrowOnInvalidArgument(src, dst, src.Length);
+            Shared.ThrowOnInvalidArgument(src, dst, src.Length);
             DeepCopy_NoChecks(src, 0, dst, 0, src.Length);
         }
 
@@ -704,7 +704,7 @@ namespace PerfCopy
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DeepCopy(this UInt64[] src, int srcOff, UInt64[] dst, int dstOff, int length)
         {
-            ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
+            Shared.ThrowOnInvalidArgument(src, dst, length, srcOff, dstOff);
             DeepCopy_NoChecks(src, srcOff, dst, dstOff, length);
         }
 
@@ -769,46 +769,55 @@ namespace PerfCopy
         /// <param name="length">Length/quantity of data to copy, in bytes.</param>
         public static unsafe void CopyMemory(byte* srcPtr, byte* dstPtr, int length)
         {
+            const int u32Size = sizeof(UInt32);
             if (Shared.PlatformWordSize == sizeof(UInt32)) {
                 int remainingBytes;
-                int words32 = DivRem(length, sizeof(UInt32), out remainingBytes);
+                int words32 = DivRem(length, u32Size, out remainingBytes);
                 var src32Ptr = (UInt32*)srcPtr;
                 var dst32Ptr = (UInt32*)dstPtr;
                 for (int i = 0; i < words32; i += 2) {
                     *(dst32Ptr + i) = *(src32Ptr + i);
                     *(dst32Ptr + i + 1) = *(src32Ptr + i + 1);
                 }
-                if (remainingBytes >= sizeof(UInt32)) {
+                if (remainingBytes >= u32Size) {
                     *(dst32Ptr + words32) = *(src32Ptr + words32);
                     words32++;
-                    remainingBytes -= sizeof(UInt32);
+                    remainingBytes -= u32Size;
                 }
-                srcPtr += words32 * sizeof(UInt32);
-                dstPtr += words32 * sizeof(UInt32);
+                srcPtr += words32 * u32Size;
+                dstPtr += words32 * u32Size;
                 length = remainingBytes;
             } else if (Shared.PlatformWordSize == sizeof(UInt64)) {
+                const int u64Size = sizeof(UInt64);
                 int remainingBytes;
-                int words64 = DivRem(length, sizeof(UInt64), out remainingBytes);
+                int words64 = DivRem(length, u64Size, out remainingBytes);
                 var src64Ptr = (UInt64*)srcPtr;
                 var dst64Ptr = (UInt64*)dstPtr;
                 for (int i = 0; i < words64; i += 2) {
                     *(dst64Ptr + i) = *(src64Ptr + i);
                     *(dst64Ptr + i + 1) = *(src64Ptr + i + 1);
                 }
-                if (remainingBytes >= sizeof(UInt64)) {
+                if (remainingBytes >= u64Size) {
                     *(dst64Ptr + words64) = *(src64Ptr + words64);
                     words64++;
-                    remainingBytes -= sizeof(UInt64);
+                    remainingBytes -= u64Size;
                 }
-                if (remainingBytes >= sizeof(UInt32)) {
+                if (remainingBytes >= u32Size) {
                     *(UInt32*)(dst64Ptr + words64) = *(UInt32*)(src64Ptr + words64);
-                    dstPtr += sizeof(UInt32);
-                    srcPtr += sizeof(UInt32);
-                    remainingBytes -= sizeof(UInt32);
+                    dstPtr += u32Size;
+                    srcPtr += u32Size;
+                    remainingBytes -= u32Size;
                 }
-                srcPtr += words64 * sizeof(UInt64);
-                dstPtr += words64 * sizeof(UInt64);
+                srcPtr += words64 * u64Size;
+                dstPtr += words64 * u64Size;
                 length = remainingBytes;
+            }
+
+            if (length >= u32Size) {
+                *(UInt32*)dstPtr = *(UInt32*)srcPtr;
+                dstPtr += u32Size;
+                srcPtr += u32Size;
+                length -= u32Size;
             }
 
             if (length >= sizeof(UInt16)) {
@@ -823,111 +832,6 @@ namespace PerfCopy
             }
         }
 #endif
-
-        /// <summary>
-        ///     Used to verify arguments for a method of the form "copy <paramref name="length" /> items, 
-        ///     possibly with modification, from <paramref name="src" />[<paramref name="srcOff" />] to 
-        ///     <paramref name="dst" />[<paramref name="dstOff" />].".
-        /// </summary>
-        /// <typeparam name="T">Type of the source and destination arrays.</typeparam>
-        /// <param name="src">Source data array.</param>
-        /// <param name="dst">Destination array for data.</param>
-        /// <param name="length">Number of items to copy from <paramref name="src"/> into <paramref name="dst"/>.</param>
-        /// <param name="srcOff">Offset in <paramref name="src"/> to read from.</param>
-        /// <param name="dstOff">Offset in <paramref name="dst"/> to write to.</param>
-        /// <param name="srcName">
-        ///     Name of the argument for <paramref name="src"/>. 
-        ///     Set to null (default) if existing name matches.
-        /// </param>
-        /// <param name="dstName">
-        ///     Name of the argument for <paramref name="dst"/>. 
-        ///     Set to null (default) if existing name matches.
-        /// </param>
-        /// <param name="lengthName">
-        ///     Name of the argument for <paramref name="length"/>. 
-        ///     Set to null (default) if existing name matches.
-        /// </param>
-        /// <param name="srcOffName">
-        ///     Name of the argument for <paramref name="srcOff"/>. 
-        ///     Set to null (default) if existing name matches.
-        /// </param>
-        /// <param name="dstOffName">
-        ///     Name of the argument for <paramref name="dstOff"/>. 
-        ///     Set to null (default) if existing name matches.
-        /// </param>
-        internal static void ThrowOnInvalidArgument<T>(
-            T[] src, T[] dst, int length, int srcOff = 0, int dstOff = 0,
-            string srcName = null, string dstName = null, string lengthName = null, string srcOffName = null, string dstOffName = null) where T : struct
-        {
-            if (src == null) {
-                throw new ArgumentNullException(srcName ?? "src");
-            }
-            int srcLength = src.Length;
-            if (src.Length < 0) {
-                throw new ArgumentException(String.Format("{0}.Length < 0 : {1} < 0", srcName ?? "src", srcLength), srcName ?? "src");
-            }
-
-            if (dst == null) {
-                throw new ArgumentNullException(dstName ?? "dst");
-            }
-            int dstLength = dst.Length;
-            if (dst.Length < 0) {
-                throw new ArgumentException(String.Format("{0}.Length < 0 : {1} < 0", dstName ?? "dst", dstLength), dstName ?? "dst");
-            }
-
-            if (srcOff != 0 || dstOff != 0 || length != srcLength) {
-                if (length < 0) {
-                    throw new ArgumentOutOfRangeException(lengthName ?? "length",
-                        String.Format("{0} < 0 : {1} < 0", lengthName ?? "length", length));
-                }
-                // Check source values
-                if (srcOff + length > srcLength) {
-                    if (srcOff >= srcLength) {
-                        throw new ArgumentException(
-                            String.Format("{0} >= {1}.Length : {2} >= {3}",
-                                srcOffName ?? "srcOff", srcName ?? "src", srcOff, srcLength));
-                    } else if (length > srcLength) {
-                        throw new ArgumentOutOfRangeException(lengthName ?? "length",
-                            String.Format("{0} > {1}.Length : {2} > {3}",
-                                lengthName ?? "length", srcName ?? "src", length, srcLength));
-                    } else {
-                        // Either the array is smaller than expected/desired, 
-                        // or the chosen offset and/or length are for a different size array...
-                        throw new ArgumentException(
-                            String.Format("{0} + {1} > {2}.Length : {3} + {4} > {5}",
-                                srcOffName ?? "srcOff", lengthName ?? "length", srcName ?? "src",
-                                srcOff, length, srcLength));
-                    }
-                } else if (srcOff < 0) {
-                    throw new ArgumentOutOfRangeException(srcOffName ?? "srcOff",
-                        String.Format("{0} < 0 : {1} < 0",
-                            srcOffName ?? "srcOff", srcOff));
-                }
-                // Check destination values
-                if (dstOff + length > dstLength) {
-                    if (dstOff >= dstLength) {
-                        throw new ArgumentException(
-                            String.Format("{0} >= {1} : {2} >= {3}",
-                                dstOffName ?? "dstOff", dstName ?? "dst", dstOff, dstLength));
-                    } else if (length > dstLength) {
-                        throw new ArgumentOutOfRangeException(lengthName ?? "length",
-                            String.Format("{0} > {1}.Length : {2} > {3}",
-                                lengthName ?? "length", dstName ?? "dst", length, dstLength));
-                    } else {
-                        // Either the array is smaller than expected/desired, 
-                        // or the chosen offset and/or length are for a different size array...
-                        throw new ArgumentException(
-                            String.Format("{0} + {1} > {2}.Length : {3} + {4} > {5}",
-                                dstOffName ?? "dstOff", lengthName ?? "length", dstName ?? "dst",
-                                dstOff, length, dstLength));
-                    }
-                } else if (dstOff < 0) {
-                    throw new ArgumentOutOfRangeException(dstOffName ?? "dstOff",
-                        String.Format("{0} < 0 : {1} < 0",
-                            dstOffName ?? "dstOff", dstOff));
-                }
-            }
-        }
 
         #endregion
     }
